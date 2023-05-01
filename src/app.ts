@@ -28,7 +28,7 @@ app.use("/tasks", taskRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  consumeRabbit();
+
   // amqp.connect(RABBITMQ_URL, (error, connection) => {
   //   if (error) {
   //     throw error;

@@ -25,6 +25,23 @@ export async function sendTaskToQueue(taskId: string) {
         persistent: true,
       });
 
+      channel.consume(
+        queue,
+        async (msg) => {
+          if (msg) {
+            console.log("Received message:", msg.content.toString());
+            console.log(processExcelFile(msg.content.toString()));
+
+            const taskId = msg.content.toString();
+            let error = await processExcelFile(taskId);
+            channel.ack(msg);
+          }
+        },
+        {
+          noAck: false,
+        }
+      );
+
       console.log("Sent message:", taskId);
     });
   });

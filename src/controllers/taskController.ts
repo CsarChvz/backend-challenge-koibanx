@@ -73,7 +73,7 @@ export async function getTaskErrors(
   // Implementar función para obtener los errores de una tarea
   const taskId = req.params.taskId;
   const task = await getTaskById(taskId);
-  res.send(task);
+
 }
 
 export async function getTasks(
