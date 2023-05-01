@@ -20,6 +20,7 @@ export async function sendTaskToQueue(taskId: string) {
       channel.assertQueue(queue, {
         durable: true,
       });
+      channel.prefetch(1);
 
       console.log("Worker is waiting for messages in the queue:", queue);
 
@@ -33,13 +34,14 @@ export async function sendTaskToQueue(taskId: string) {
         queue,
         async (msg) => {
           if (msg) {
-            console.log("Received message:", msg.content.toString());
-
             const taskId = msg.content.toString();
 
-            await processExcelFile(taskId);
+            let errors = await processExcelFile(taskId);
+            console.log(msg.content.toString());
 
-            channel.ack(msg);
+            if (errors.length == 0) {
+              channel.ack(msg);
+            }
           }
         },
         {

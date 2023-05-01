@@ -43,19 +43,6 @@ export async function uploadExcel(
     },
   }).single("file");
 
-  // const storage = new GridFsStorage({
-  //   url: "mongodb+srv://cesarchavez8728:@backendchallengekoibanx.3nkilsm.mongodb.net/backend_challenge_koibanx?retryWrites=true&w=majority",
-  //   file: (req, file) => {
-  //     file.filename = `${taskId}.xlsx`;
-  //     return {
-  //       filename: file.filename,
-  //       bucketName: "excel_files",
-  //     };
-  //   },
-  // });
-
-  // const upload = multer({ storage }).single("file");
-
   upload(req, res, async (err) => {
     if (err) {
       console.log(err);

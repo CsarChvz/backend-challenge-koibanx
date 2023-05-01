@@ -7,9 +7,12 @@ import type { Express } from "express";
 
 // Routes
 import { taskRoutes } from "./routes/taskRoutes";
+import { processExcelFile } from "./services/excelCheckService";
 // Configurations
+import amqp from "amqplib/callback_api";
 
 dotenv.config();
+const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
 
 const app: Express = express();
 app.use(express.json());
@@ -24,4 +27,40 @@ app.use("/tasks", taskRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  // amqp.connect(RABBITMQ_URL, (error, connection) => {
+  //   if (error) {
+  //     throw error;
+  //   }
+
+  //   connection.createChannel((err, channel) => {
+  //     if (err) {
+  //       throw err;
+  //     }
+
+  //     const queue = "excel_processing";
+
+  //     channel.assertQueue(queue, {
+  //       durable: true,
+  //     });
+
+  //     console.log("Worker is waiting for messages in the queue:", queue);
+
+  //     channel.consume(
+  //       queue,
+  //       async (msg) => {
+  //         if (msg) {
+  //           console.log("Received message:", msg.content.toString());
+  //           console.log(processExcelFile(msg.content.toString()));
+
+  //           const taskId = msg.content.toString();
+  //           let error = await processExcelFile(taskId);
+  //           channel.ack(msg);
+  //         }
+  //       },
+  //       {
+  //         noAck: false,
+  //       }
+  //     );
+  //   });
+  // });
 });

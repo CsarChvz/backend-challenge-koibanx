@@ -11,13 +11,15 @@ interface ErrorMessage {
 
 export async function processExcelFile(
   taskId: string
-): Promise<ErrorMessage[] | []> {
+): Promise<ErrorMessage[]> {
   // Leer el archivo de Excel y realizar la validación y procesamiento
   // Guardar los errores encontrados en el archivo en el campo "errors" de la tarea
   // Actualizar el estado de la tarea según sea necesario
 
-  const task: TaskSchema | null = await getTaskById(taskId);
+  console.log("Processing Excel file...");
 
+  const task: TaskSchema | null = await getTaskById(taskId);
+  task?.updateOne({ status: "processing" });
   if (!task) {
     throw new Error("Task not found");
   }
@@ -28,11 +30,10 @@ export async function processExcelFile(
 
   const data = XLSX.utils.sheet_to_json(sheet);
   const errors = validateData(data);
-  console.log("errors", errors);
 
   if (errors.length > 0) {
     console.log("Errors found:", errors);
-    await updateTask(taskId, { status: "error", errors_task: errors });
+    await updateTask(taskId, { status: "done", errors_task: errors });
     return errors;
   } else {
     // Procesa los datos del archivo Excel y realiza las acciones necesarias
@@ -47,13 +48,9 @@ function validateData(
 ): Array<{ row: number; column: number; message: string }> {
   // Implementar la validación de datos del archivo Excel
   // Devuelve una lista de errores con la fila, columna y mensaje de error
-  const errors: ErrorMessage[] | [] = [];
+  let errors: ErrorMessage[] = [];
 
-  data.forEach((row, rowIndex) => {
-    Object.keys(row).forEach((column, columnIndex) => {
-      // Validaciones de cada columna
-    });
-  });
+  data.forEach((row, rowIndex) => {});
 
   return errors;
 }
