@@ -43,14 +43,12 @@ export async function processExcelFile(
   }
 }
 
-function validateData(
-  data: any[]
-): Array<{ row: number; column: number; message: string }> {
+function validateData(data: any[]): Array<ErrorMessage> {
   // Implementar la validación de datos del archivo Excel
   // Devuelve una lista de errores con la fila, columna y mensaje de error
   let errors: ErrorMessage[] = [];
 
-  data.forEach((row, rowIndex) => {});
+  data.forEach((row, index) => {});
 
   return errors;
 }
