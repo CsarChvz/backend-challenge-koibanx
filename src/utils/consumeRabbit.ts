@@ -4,7 +4,7 @@ import { processExcelFile } from "../services/excelCheckService";
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
 
-export async function sendTaskToQueue(taskId: string) {
+export async function consumeRabbit() {
   amqp.connect(RABBITMQ_URL, (error, connection) => {
     if (error) {
       throw error;
@@ -20,12 +20,22 @@ export async function sendTaskToQueue(taskId: string) {
       channel.assertQueue(queue, {
         durable: true,
       });
+      channel.prefetch(1);
+      console.log("Worker is waiting for messages in the queue:", queue);
+      channel.consume(
+        queue,
+        async (msg) => {
+          if (msg) {
+            const taskId = msg.content.toString();
 
-      channel.sendToQueue(queue, Buffer.from(taskId), {
-        persistent: true,
-      });
-
-      console.log("Sent message:", taskId);
+            let errors = await processExcelFile(taskId);
+            channel.ack(msg);
+          }
+        },
+        {
+          noAck: false,
+        }
+      );
     });
   });
 }

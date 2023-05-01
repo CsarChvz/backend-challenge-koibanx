@@ -39,6 +39,8 @@ export async function processExcelFile(
     // Procesa los datos del archivo Excel y realiza las acciones necesarias
     // Actualizar el estado de la tarea a 'done'
     await updateTask(taskId, { status: "done" });
+    console.log("Excel file processed.");
+
     return [];
   }
 }

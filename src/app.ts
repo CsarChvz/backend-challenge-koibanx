@@ -10,6 +10,7 @@ import { taskRoutes } from "./routes/taskRoutes";
 import { processExcelFile } from "./services/excelCheckService";
 // Configurations
 import amqp from "amqplib/callback_api";
+import { consumeRabbit } from "./utils/consumeRabbit";
 
 dotenv.config();
 const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
@@ -20,13 +21,14 @@ app.use(express.urlencoded({ extended: true }));
 const uri: string = process.env.MONGO_URI || "";
 const port: number = Number(process.env.PORT) || 3000;
 mongoose.connect(
-  "mongodb+srv://cesarchavez8728:pandita9@backendchallengekoibanx.3nkilsm.mongodb.net/backend_challenge_koibanx?retryWrites=true&w=majority"
+  "mongodb+srv://cesarchavez8728:@backendchallengekoibanx.3nkilsm.mongodb.net/backend_challenge_koibanx?retryWrites=true&w=majority"
 );
 
 app.use("/tasks", taskRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  consumeRabbit();
   // amqp.connect(RABBITMQ_URL, (error, connection) => {
   //   if (error) {
   //     throw error;
