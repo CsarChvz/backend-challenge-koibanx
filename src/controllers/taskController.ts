@@ -6,7 +6,7 @@ import { GridFsStorage } from "multer-gridfs-storage";
 
 // Services
 import { processExcelFile } from "../services/excelCheckService";
-import { createTask } from "../services/taskService";
+import { createTask, getTaskById } from "../services/taskService";
 
 // Workers -- RabbitMQ
 import { sendTaskToQueue } from "../workers/excelWorker";
@@ -60,7 +60,9 @@ export async function getTaskStatus(
   next: NextFunction
 ) {
   // Implementar función para obtener el estado de una tarea
-  res.send("Get Task Status");
+  const taskId = req.params.taskId;
+  const task = await getTaskById(taskId);
+  res.send(task);
 }
 
 export async function getTaskErrors(
@@ -68,8 +70,10 @@ export async function getTaskErrors(
   res: Response,
   next: NextFunction
 ) {
-  // Implementar función para obtener los errores de una tarea de forma paginada
-  res.send("Get Task Errors");
+  // Implementar función para obtener los errores de una tarea
+  const taskId = req.params.taskId;
+  const task = await getTaskById(taskId);
+  res.send(task);
 }
 
 export async function getTasks(
